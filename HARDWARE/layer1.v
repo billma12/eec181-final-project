@@ -45,7 +45,7 @@ output [31:0] toHexLed
 	reg [15:0] img_count = 0;
 	reg [15:0] node_count = 0;
 	
-	reg signed [31:0] total = 0;
+	reg signed [16:0] total = 0;
 	reg signed [15:0] weight = 0;
 	reg signed [15:0] img = 0;
 	reg signed [3:0] sum0 = 0;
@@ -146,10 +146,10 @@ output [31:0] toHexLed
 			end
 			// parallel calculations
 			ADD: begin 
-				total <= total + {{28{sum3[3]}}, sum3} + 
-								 {{28{sum2[3]}}, sum2} + 
-								 {{28{sum1[3]}}, sum1} + 
-								 {{28{sum0[3]}}, sum0};
+				total <= total + {sum3[3], sum3} + 
+						{sum2[3], sum2} + 
+						{sum1[3], sum1} + 
+						{sum0[3], sum0};
 			end
 			WRITE_TO_L1: begin
 				node_count <= (!waitrequest) ? node_count + 1 : node_count;
@@ -170,7 +170,7 @@ output [31:0] toHexLed
 		sum1 = (img[8] == 1'b1)  ? weight[11:8] : 4'd0;
 		sum2 = (img[4] == 1'b1)  ? weight[7:4] : 4'd0;
 		sum3 = (img[0] == 1'b1)  ? weight[3:0] : 4'd0;
-		writedata = sum[15:0];
+		writedata = total[15:0];
 		done = (state == DONE) ? 1 : 0;
 		case(state)
 			READ_W1:begin
