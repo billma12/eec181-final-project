@@ -146,10 +146,10 @@ output [31:0] toHexLed
 			end
 			// parallel calculations
 			ADD: begin 
-				total <= total + {sum3[3], sum3} + 
-						{sum2[3], sum2} + 
-						{sum1[3], sum1} + 
-						{sum0[3], sum0};
+				total <= total + {{12{sum3[3]}}, sum3} + //append 3rd bit if we need to turn into negative 
+						{{12{sum2[3]}}, sum2} + 
+						{{12{sum1[3]}}, sum1} + 
+						{{12{sum0[3]}}, sum0};
 			end
 			WRITE_TO_L1: begin
 				node_count <= (!waitrequest) ? node_count + 1 : node_count;
