@@ -1,0 +1,74 @@
+module sdram_read_write(
+input clk,
+input reset_n,
+input waitrequest,
+input readdatavalid,
+input [15:0] readdata,
+
+output chipselect,
+output [1:0] byteenable,
+output reg read_n,
+output reg write_n,
+
+output reg [15:0] writedata,
+output reg [31:0] address,
+
+output [31:0] toHexLed
+);
+
+
+    assign byteenable = 2'b11;
+	assign chipselect = 1'b1;
+	
+	reg [3:0] state = 0;
+	reg [11:0] step = 0;
+	reg [23:0] counter = 0;
+	reg [15:0] other = 28'hFFABCDE;
+	
+	assign toHexLed = {other,state};
+	
+	localparam SECOND = 5;
+	
+	//State Machine Example (add names for states later)
+	always@(posedge clk)
+	begin
+		case(state)
+			0: state <= (waitrequest == 0 && readdatavalid == 1 && readdata == 0xFFFF) ? 1 : 0;
+			1: state <= (counter == SECOND) ? 2: 1;
+			2: state <= (counter == SECOND) ? 3: 2;
+			3: state <= (counter == SECOND) ? 4: 3;
+			4: state <= (counter == SECOND) ? 5: 4;
+			5: state <= (waitrequest == 0)  ? 6: 5;
+			6: state <= 0;
+			default: state <= 0;
+		endcase
+	end
+	
+	//State outputs
+	always@(posedge clk)
+	begin
+		case(state)
+			0: 
+			begin 
+				address <= 32'd20;
+				read_n <= 0;
+				write_n <= 1;
+			end
+			1: read_n < = 1;
+			5:
+			begin
+				address <= 32'd20;
+				writedata <= 0xFFFE;
+				write_n <= 0;
+			end
+		endcase
+	end
+	
+	//Counts to 1 second
+	always@(posedge clk)
+	begin
+		counter <= (counter == SECOND) ? 0 : counter + 1;
+	end
+	
+	
+endmodule

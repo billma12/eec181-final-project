@@ -1,0 +1,70 @@
+module sdram_rdy_done(
+input clk,
+input reset_n,
+/*input waitrequest,
+input readdatavalid,
+input [15:0] readdata,
+
+output chipselect,
+output [1:0] byteenable,
+output reg read_n,
+output reg write_n,
+
+output reg [15:0] writedata,
+output reg [31:0] address,
+*/
+
+input ready,
+output reg done,
+output [31:0] toHexLed
+
+);
+	//reg declarations
+	reg [3:0] state = 0;
+	reg [11:0] step = 0;
+	reg [23:0] counter = 0;
+	reg [15:0] other = 16'hFFAB;
+	
+	assign toHexLed = {other,step,state};
+	
+	localparam SECOND = 5;
+	
+	//State Machine Example (add names for states later)
+	always@(posedge clk)
+	begin
+		case(state)
+			0: state <= (ready) ? 1 : 0;
+			1: state <= (counter == SECOND) ? 2: 1;
+			2: state <= (counter == SECOND) ? 3: 2;
+			3: state <= (counter == SECOND) ? 4: 3;
+			4: state <= (counter == SECOND) ? 5: 4;
+			5: state <= (~ready) ? 0: 5;
+			default: state <= 0;
+		endcase
+	end
+	
+	//State outputs
+	always@(posedge clk)
+	begin
+		case(state)
+			5: done <= 1; //in this state we are done
+			default: done <= 0;
+		endcase
+	end
+	
+	//Counts to 1 second
+	always@(posedge clk)
+	begin
+		counter <= (counter == SECOND) ? 0 : counter + 1;
+	end
+	
+	//Show each second on Board
+	always@(posedge clk)
+	begin
+		if (counter == SECOND)
+			step <= step + 1;
+		else
+			step <= step;
+	end
+	
+endmodule

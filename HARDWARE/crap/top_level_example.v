@@ -1,0 +1,237 @@
+module top_level(	
+	//-----------SDRAM--------------//
+/*	output		[12:0]	DRAM_ADDR,
+	output		[1:0]	DRAM_BA,
+	output			DRAM_CAS_N,
+	output			DRAM_CKE,
+	output			DRAM_CLK,
+	output			DRAM_CS_N,
+	inout		[15:0]	DRAM_DQ,
+	output			DRAM_LDQM,
+	output			DRAM_RAS_N,
+	output			DRAM_UDQM,
+	output			DRAM_WE_N,
+*/
+	//-----------HPS MEMORY------------------//
+/*
+	output		[14:0]	HPS_DDR3_ADDR,
+	output		[2:0]	HPS_DDR3_BA,
+	output			HPS_DDR3_CAS_N,
+	output			HPS_DDR3_CKE,
+	output			HPS_DDR3_CK_N,
+	output			HPS_DDR3_CK_P,
+	output			HPS_DDR3_CS_N,
+	output		[3:0]	HPS_DDR3_DM,
+	inout		[31:0]	HPS_DDR3_DQ,
+	inout		[3:0]	HPS_DDR3_DQS_N,
+	inout		[3:0]	HPS_DDR3_DQS_P,
+	output			HPS_DDR3_ODT,
+	output			HPS_DDR3_RAS_N,
+	output			HPS_DDR3_RESET_N,
+	input			HPS_DDR3_RZQ,
+	output			HPS_DDR3_WE_N,
+	
+	//-----------HPS UART---------//
+	
+	output			HPS_SD_CLK,
+	inout			HPS_SD_CMD,
+	inout		[3:0]	HPS_SD_DATA,
+
+	input			HPS_UART_RX,
+	output			HPS_UART_TX,
+	
+	input			HPS_USB_CLKOUT,
+	inout		[7:0]	HPS_USB_DATA,
+	input			HPS_USB_DIR,
+	input			HPS_USB_NXT,
+	output			HPS_USB_STP,
+*/
+/*
+	//--------VGA PINS--------------//
+	
+	output		[7:0]	VGA_B,
+	output			VGA_BLANK_N,
+	output			VGA_CLK,
+	output		[7:0]	VGA_G,
+	output			VGA_HS,
+	output		[7:0]	VGA_R,
+	output			VGA_SYNC_N,
+	output			VGA_VS,
+*/	
+
+	//---------BOARD STUFF-------------//
+	input			CLOCK_50,
+	output		[6:0]	HEX0, HEX1, HEX2, HEX3, HEX4, HEX5,
+	
+	input		[3:0]	KEY,
+	output		[9:0]	LEDR,
+	input		[9:0]	SW
+);
+
+
+
+wire			hps_fpga_reset_n;
+/*
+wire			clk_65;
+wire	[7:0]		vid_r,vid_g,vid_b;
+wire			vid_v_sync;
+wire			vid_h_sync;
+wire			vid_datavalid;
+
+
+assign	VGA_BLANK_N		=	1'b1;
+assign	VGA_SYNC_N		=	1'b0;
+assign	VGA_CLK			=	clk_65;
+assign	{VGA_B,VGA_G,VGA_R}	=	{vid_b,vid_g,vid_r};
+assign	VGA_VS			=	vid_v_sync;
+assign	VGA_HS			=	vid_h_sync;
+
+
+
+mysystem u0 (
+//---------clocks and reset ------------------//
+
+// .clk_65_clk		(clk_65),
+ .system_ref_clk_clk   (CLOCK_50),                         //                system_ref_clk.clk
+ .system_sdram_clk_clk  (DRAM_CLK),                             //                     sdram_clk.clk
+ .system_ref_reset_reset (~hps_fpga_reset_n),                    //              system_ref_reset.reset
+ .hps_0_h2f_reset_reset_n (hps_fpga_reset_n),                   //               hps_0_h2f_reset.reset_n
+
+//------------- HPS MEMORY --------------//
+	.memory_mem_a		(HPS_DDR3_ADDR),
+	.memory_mem_ba		(HPS_DDR3_BA),
+	.memory_mem_ck		(HPS_DDR3_CK_P),
+	.memory_mem_ck_n	(HPS_DDR3_CK_N),
+	.memory_mem_cke		(HPS_DDR3_CKE),
+	.memory_mem_cs_n	(HPS_DDR3_CS_N),
+	.memory_mem_ras_n	(HPS_DDR3_RAS_N),
+	.memory_mem_cas_n	(HPS_DDR3_CAS_N),
+	.memory_mem_we_n	(HPS_DDR3_WE_N),
+	.memory_mem_reset_n	(HPS_DDR3_RESET_N),
+	.memory_mem_dq		(HPS_DDR3_DQ),
+	.memory_mem_dqs		(HPS_DDR3_DQS_P),
+	.memory_mem_dqs_n	(HPS_DDR3_DQS_N),
+	.memory_mem_odt		(HPS_DDR3_ODT),
+	.memory_mem_dm		(HPS_DDR3_DM),
+	.memory_oct_rzqin	(HPS_DDR3_RZQ),
+	
+//------------HPS UART STUFF-----------------------//
+	.hps_io_hps_io_sdio_inst_CMD		(HPS_SD_CMD),
+	.hps_io_hps_io_sdio_inst_D0		(HPS_SD_DATA[0]),
+	.hps_io_hps_io_sdio_inst_D1		(HPS_SD_DATA[1]),
+	.hps_io_hps_io_sdio_inst_CLK		(HPS_SD_CLK),
+	.hps_io_hps_io_sdio_inst_D2		(HPS_SD_DATA[2]),
+	.hps_io_hps_io_sdio_inst_D3		(HPS_SD_DATA[3]),
+	.hps_io_hps_io_usb1_inst_D0		(HPS_USB_DATA[0]),
+	.hps_io_hps_io_usb1_inst_D1		(HPS_USB_DATA[1]),
+	.hps_io_hps_io_usb1_inst_D2		(HPS_USB_DATA[2]),
+	.hps_io_hps_io_usb1_inst_D3		(HPS_USB_DATA[3]),
+	.hps_io_hps_io_usb1_inst_D4		(HPS_USB_DATA[4]),
+	.hps_io_hps_io_usb1_inst_D5		(HPS_USB_DATA[5]),
+	.hps_io_hps_io_usb1_inst_D6		(HPS_USB_DATA[6]),
+	.hps_io_hps_io_usb1_inst_D7		(HPS_USB_DATA[7]),
+	.hps_io_hps_io_usb1_inst_CLK		(HPS_USB_CLKOUT),
+	.hps_io_hps_io_usb1_inst_STP		(HPS_USB_STP),
+	.hps_io_hps_io_usb1_inst_DIR		(HPS_USB_DIR),
+	.hps_io_hps_io_usb1_inst_NXT		(HPS_USB_NXT),
+	.hps_io_hps_io_uart0_inst_RX		(HPS_UART_RX),
+	.hps_io_hps_io_uart0_inst_TX		(HPS_UART_TX),
+
+	/*
+//--------------------- VGA STUFF -----------------------------------//
+
+	.alt_vip_itc_0_clocked_video_vid_clk		(~clk_65),
+	.alt_vip_itc_0_clocked_video_vid_data		({vid_r,vid_g,vid_b}),
+	.alt_vip_itc_0_clocked_video_vid_underflow	(),
+	.alt_vip_itc_0_clocked_video_vid_datavalid	(vid_datavalid),
+	.alt_vip_itc_0_clocked_video_vid_v_sync		(vid_v_sync),
+	.alt_vip_itc_0_clocked_video_vid_h_sync		(vid_h_sync),
+	.alt_vip_itc_0_clocked_video_vid_f		(),
+	.alt_vip_itc_0_clocked_video_vid_h		(),
+	.alt_vip_itc_0_clocked_video_vid_v		(),
+
+*/
+//-----------------------SDRAM MEMORY ----------------------------------//
+/*
+        .sdram_wire_addr                           (DRAM_ADDR),                           //                    sdram_wire.addr
+        .sdram_wire_ba                             (DRAM_BA),                             //                              .ba
+        .sdram_wire_cas_n                          (DRAM_CAS_N),                          //                              .cas_n
+        .sdram_wire_cke                            (DRAM_CKE),                            //                              .cke
+        .sdram_wire_cs_n                           (DRAM_CS_N),                           //                              .cs_n
+        .sdram_wire_dq                             (DRAM_DQ),                             //                              .dq
+        .sdram_wire_dqm                            ({DRAM_UDQM, DRAM_LDQM}),                            //                              .dqm
+        .sdram_wire_ras_n                          (DRAM_RAS_N),                          //                              .ras_n
+        .sdram_wire_we_n                           (DRAM_WE_N),                           //                              .we_n
+		  
+//--------------------CONDUIT STUFF -------------------------------------//
+	
+		//---- PIOS ----//
+		.done_to_hps_export                        (done_to_HPS),                        //                   done_to_hps.export
+		.ready_from_hps_export                     (ready_from_HPS),                      //                ready_from_hps.export
+		
+		.rd_control_done             (done_to_HPS),             //       rd_control.done
+      .rd_control_ready            (ready_from_HPS | ~KEY[0]),            //                 .ready
+      .rd_control_tohexled         (toHexLed)          //                 .tohexled
+	
+	    .rd_master_0_conduit_end_ready    (ready_from_HPS | ~KEY[0]),    // rd_master_0_conduit_end.ready
+       .rd_master_0_conduit_end_done     (done_to_HPS),     //                        .done
+       .rd_master_0_conduit_end_tohexled (toHexLed)  //                        .tohexled
+
+);
+   
+	wire done_to_HPS;
+	wire ready_from_HPS;
+	wire [31:0] toHexLed;
+	
+	display_hex h1(display_hex[3:0], HEX0);
+	display_hex h2(display_hex[7:4], HEX1);
+	display_hex h3(display_hex[11:8], HEX2);
+	display_hex h4(display_hex[15:12], HEX3);
+	display_hex h5(display_hex[19:16], HEX4);
+	display_hex h6(display_hex[23:20], HEX5);
+	
+	assign LEDR[7:0] = display_hex[31:24];
+*/
+
+
+
+
+//------------- INSANITY CHECK ---------------------//
+
+
+    wire [31:0] toHexLed;
+	assign LEDR = {2'b0, toHexLed[31:24]}; 
+	
+	display_hex h0(state, HEX0);
+	display_hex h1(step[3:0], HEX1);
+	display_hex h2(step[7:4], HEX2);
+	display_hex h3(step[11:8], HEX3);
+	display_hex h4(toHexLed[19:16], HEX4);
+	display_hex h5(toHexLed[23:20], HEX5);
+	
+	reg [3:0] state = 0;
+	reg [31:0] counter = 0;
+	reg [11:0] step = 0;
+	
+	always@(posedge CLOCK_50)
+	begin
+		case(state)
+			0: state <= (~KEY[0]) ? 1 : 0;
+			1: state <= (counter == 50000000) ? 2: 1;
+			2: state <= (counter == 50000000) ? 3: 2;
+			3: state <= (counter == 50000000) ? 4: 3;
+			4: state <= (counter == 50000000) ? 5: 4;
+			5: state <= (KEY[0]) ? 0: 5;
+		endcase
+	end
+	
+	always@(posedge CLOCK_50)
+	begin
+		counter <= (counter == 50_000_000) ? 0 : counter + 1;
+		
+		if(counter == 50_000_000)  begin step <= step + 1; end
+		else if(~KEY[3])          begin step <= 0;        end
+		else                       begin step <= step;     end
+	end
+
+endmodule

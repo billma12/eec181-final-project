@@ -1,0 +1,19 @@
+module sdram_rx2(
+input clk,
+input reset_n,
+input waitrequest,
+input readdatavalid,
+input [15:0] readdata,
+
+output chipselect,
+output [1:0] byteenable,
+output reg read_n,
+output reg write_n,
+
+output reg [15:0] writedata,
+output reg [31:0] address,
+
+input ready,
+output reg done,
+output [31:0] toHexLed
+);

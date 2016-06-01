@@ -1,0 +1,58 @@
+module sdram_rdy_done2(
+input clk,
+input reset_n,
+/*input waitrequest,
+input readdatavalid,
+input [15:0] readdata,
+
+output [1:0] byteenable,
+
+output reg [15:0] writedata,
+output reg [31:0] address,
+*/
+output reg read_n = 1,
+output reg write_n = 1,
+output reg chipselect,
+
+input ready,
+output reg done,
+output [31:0] toHexLed
+);
+
+	assign chipselect = 1;
+	
+	reg [3:0] state = 0;
+	reg [31:0] counter = 0;
+	
+	assign toHexLed = {28'hFF12345,state};
+	
+	localparam SECOND = 50_000_000;
+	
+	//State Machine Example
+	always@(posedge clk)
+	begin
+		case(state)
+			0: state <= (ready) ? 1 : 0;
+			1: state <= (counter == SECOND) ? 2: 1;
+			2: state <= (counter == SECOND) ? 3: 2;
+			3: state <= (counter == SECOND) ? 4: 3;
+			4: state <= (counter == SECOND) ? 5: 4;
+			5: state <= (~ready) ? 0: 5;
+		endcase
+	end
+	
+	//Output 
+	always@(posedge clk)
+	begin
+		case(state)
+			0: done <= 0;
+			5: done <= 1;
+		endcase
+	end
+	
+	//One Second
+	always@(posedge clk)
+	begin
+		counter <= (counter == SECOND) ? 0 : counter + 1;
+	end
+endmodule

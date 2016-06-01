@@ -1,0 +1,50 @@
+module rdy_done_example(
+	input			CLOCK_50,
+	input		[3:0]	KEY,
+	
+	output		[9:0]	LEDR,
+	output		[6:0]	HEX0, HEX1, HEX2, HEX3, HEX4, HEX5
+);
+
+   wire [31:0] HexLed;
+	assign LEDR = {2'b0, HexLed[31:24]}; 
+	
+	display_hex h0(state, HEX0);
+	display_hex h1(step[3:0], HEX1);
+	display_hex h2(step[7:4], HEX2);
+	display_hex h3(step[11:8], HEX3);
+	display_hex h4(HexLed[19:16], HEX4);
+	display_hex h5(HexLed[23:20], HEX5);
+	
+	reg [3:0] state = 0;
+	reg [31:0] counter = 0;
+	reg [11:0] step = 0;
+	
+	//State Machine Example
+	always@(posedge CLOCK_50)
+	begin
+		case(state)
+			0: state <= (~KEY[0]) ? 1 : 0;
+			1: state <= (counter == 50000000) ? 2: 1;
+			2: state <= (counter == 50000000) ? 3: 2;
+			3: state <= (counter == 50000000) ? 4: 3;
+			4: state <= (counter == 50000000) ? 5: 4;
+			5: state <= (KEY[0]) ? 0: 5;
+		endcase
+	end
+	
+	//One Second
+	always@(posedge CLOCK_50)
+	begin
+		counter <= (counter == 50_000_000) ? 0 : counter + 1;
+	end
+	
+	//Press KEY3 to reset step;
+	always@(posedge CLOCK_50)
+	begin
+		if(counter == 50_000_000)  begin step <= step + 1; end
+		else if(~KEY[3])           begin step <= 0;        end
+		else                       begin step <= step;     end
+	end
+
+endmodule
