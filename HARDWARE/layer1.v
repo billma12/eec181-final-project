@@ -166,10 +166,10 @@ output [31:0] toHexLed
 	//outputs
 	always @ (*) 
 	begin
-		sum0 = (pix[12] == 1'b1) ? weight[15:12] : 4'd0;
-		sum1 = (pix[8] == 1'b1)  ? weight[11:8] : 4'd0;
-		sum2 = (pix[4] == 1'b1)  ? weight[7:4] : 4'd0;
-		sum3 = (pix[0] == 1'b1)  ? weight[3:0] : 4'd0;
+		sum0 = (img[12] == 1'b1) ? weight[15:12] : 4'd0;
+		sum1 = (img[8] == 1'b1)  ? weight[11:8] : 4'd0;
+		sum2 = (img[4] == 1'b1)  ? weight[7:4] : 4'd0;
+		sum3 = (img[0] == 1'b1)  ? weight[3:0] : 4'd0;
 		writedata = sum[15:0];
 		done = (state == DONE) ? 1 : 0;
 		case(state)
