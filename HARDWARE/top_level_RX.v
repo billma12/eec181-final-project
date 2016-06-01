@@ -93,7 +93,7 @@ assign	VGA_HS			=	vid_h_sync;
 	
 	display_hex h1(toHexLed[3:0], HEX0);
 	display_hex h2(toHexLed[7:4], HEX1);
-	display_hex h3(toHexLed[11:8], HEX2);
+	display_hex h3(toHexLed[11:8], HEX2);//
 	display_hex h4(toHexLed[15:12], HEX3);
 	display_hex h5(toHexLed[19:16], HEX4);
 	display_hex h6(toHexLed[23:20], HEX5);
