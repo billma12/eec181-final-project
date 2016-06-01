@@ -157,6 +157,7 @@ output [31:0] toHexLed
 				img_count < = 0;
 			end
 			CONT: begin
+				adr_img <= IMG_BASE;
 				total <= 0;
 			end
 		endcase
