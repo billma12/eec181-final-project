@@ -177,17 +177,17 @@ output [31:0] toHexLed
 			READ_W1:begin
 				read_n = 0;
 				write_n = 1;
-				address <= adr_w1;
+				address = adr_w1;
 			end
 			READ_IMG:begin
 				read_n = 0;
 				write_n = 1;
-				address <= adr_img;
+				address = adr_img;
 			end
 			WRITE_IMG:begin
 				write_n = 0;
 				read_n = 1;
-				address <= adr_layer1;
+				address = adr_layer1;
 			end
 		endcase
 	end					
