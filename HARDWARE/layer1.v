@@ -54,7 +54,7 @@ output [31:0] toHexLed
 	reg signed [3:0] sum3 = 0;
 	
 	//send to board
-	assign toHexLed = {20'ABCDE,state};
+	assign toHexLed = {20'hABCDE,state};
 	
 	always @ (posedge clk) begin
 	if(~reset_n) begin
