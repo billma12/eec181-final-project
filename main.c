@@ -467,7 +467,9 @@ void init_sdram(void* ptr){
             temp = 0;
             counter = 3;
         }
-        else{counter--;}
+        else{
+            counter--;
+        }
     }
 
     fclose(fd);
