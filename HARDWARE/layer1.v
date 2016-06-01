@@ -45,7 +45,7 @@ output [31:0] toHexLed
 	reg [15:0] img_count = 0;
 	reg [15:0] node_count = 0;
 	
-	reg signed [16:0] total = 0;
+	reg signed [16:0] total = 0; //add a bit to deal with negative #s
 	reg signed [15:0] weight = 0;
 	reg signed [15:0] img = 0;
 	reg signed [3:0] sum0 = 0;
